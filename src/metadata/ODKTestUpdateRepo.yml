@@ -1,0 +1,28 @@
+# PURL configuration for http://purl.obolibrary.org/obo/ODKTestUpdateRepo
+
+idspace: ODKTESTUPDATEREPO
+base_url: /obo/ODKTestUpdateRepo
+
+products:
+- ODKTestUpdateRepo.owl: https://raw.githubusercontent.com/pfabry/ODKTestUpdateRepo/main/ODKTestUpdateRepo.owl
+- ODKTestUpdateRepo.obo: https://raw.githubusercontent.com/pfabry/ODKTestUpdateRepo/main/ODKTestUpdateRepo.obo
+
+term_browser: ontobee
+example_terms:
+- ODKTESTUPDATEREPO_0000000
+
+entries:
+
+- prefix: /releases/
+  replacement: https://raw.githubusercontent.com/pfabry/ODKTestUpdateRepo/v
+
+- prefix: /tracker/
+  replacement: https://github.com/pfabry/ODKTestUpdateRepo/issues
+
+- prefix: /about/
+  replacement: http://www.ontobee.org/ontology/ODKTESTUPDATEREPO?iri=http://purl.obolibrary.org/obo/
+
+## generic fall-through, serve direct from github by default
+- prefix: /
+  replacement: https://raw.githubusercontent.com/pfabry/ODKTestUpdateRepo/main/
+

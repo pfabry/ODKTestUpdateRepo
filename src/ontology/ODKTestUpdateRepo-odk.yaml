@@ -1,0 +1,15 @@
+id: ODKTestUpdateRepo
+title: ODK1.5 test update repo
+github_org: pfabry
+repo: ODKTestUpdateRepo
+release_artefacts:
+  - base
+  - full
+primary_release: full
+export_formats:
+  - owl
+import_group:
+  products:
+    - id: bfo
+    - id: obi
+robot_java_args: "-Xmx8G"
