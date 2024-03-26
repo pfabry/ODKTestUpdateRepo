@@ -10,7 +10,7 @@
 # More information: https://github.com/INCATools/ontology-development-kit/
 
 # Fingerprint of the configuration file when this Makefile was last generated
-CONFIG_HASH=                c1c1ed2653ba6802eff1a3b5d847edb95ea4d6625dc9b04e3e79899b1dd50d20
+CONFIG_HASH=                35d465d9e6eadcd45be675191bf89fa5c359e4094e08b272637a307ab8081f71
 
 
 # ----------------------------------------
@@ -57,7 +57,7 @@ OTHER_SRC =
 ONTOLOGYTERMS =             $(TMPDIR)/ontologyterms.txt
 EDIT_PREPROCESSED =         $(TMPDIR)/$(ONT)-preprocess.owl
 
-FORMATS = $(sort  owl json owl)
+FORMATS = $(sort  owl owl)
 FORMATS_INCL_TSV = $(sort $(FORMATS) tsv)
 RELEASE_ARTEFACTS = $(sort $(ONT)-base $(ONT)-full )
 
@@ -159,7 +159,7 @@ all_main: $(MAIN_FILES)
 # ----------------------------------------
 
 
-IMPORTS =  bfo obi
+IMPORTS =  bfo
 
 IMPORT_ROOTS = $(patsubst %, $(IMPORTDIR)/%_import, $(IMPORTS))
 IMPORT_OWL_FILES = $(foreach n,$(IMPORT_ROOTS), $(n).owl)
@@ -404,14 +404,6 @@ mirror-bfo: | $(TMPDIR)
 	$(ROBOT) convert -i $(TMPDIR)/bfo-download.owl -o $(TMPDIR)/$@.owl
 
 
-## ONTOLOGY: obi
-.PHONY: mirror-obi
-.PRECIOUS: $(MIRRORDIR)/obi.owl
-mirror-obi: | $(TMPDIR)
-	curl -L $(OBOBASE)/obi.owl --create-dirs -o $(TMPDIR)/obi-download.owl --retry 4 --max-time 200 && \
-	$(ROBOT) convert -i $(TMPDIR)/obi-download.owl -o $(TMPDIR)/$@.owl
-
-
 $(MIRRORDIR)/%.owl: mirror-% | $(MIRRORDIR)
 	if [ -f $(TMPDIR)/mirror-$*.owl ]; then if cmp -s $(TMPDIR)/mirror-$*.owl $@ ; then echo "Mirror identical, ignoring."; else echo "Mirrors different, updating." &&\
 		cp $(TMPDIR)/mirror-$*.owl $@; fi; fi
@@ -436,10 +428,6 @@ $(SUBSETDIR)/%.owl: $(ONT).owl | $(SUBSETDIR)
 .PRECIOUS: $(SUBSETDIR)/%.owl
 
 
-$(SUBSETDIR)/%.json: $(SUBSETDIR)/%.owl
-	$(ROBOT) convert --input $< --check false -f json -o $@.tmp.json &&\
-	mv $@.tmp.json $@
-
 
 # ---------------------------------------------
 # Sparql queries: Table exports / Query Reports
@@ -459,14 +447,6 @@ endif
 # ----------------------------------------
 
 
-$(ONT)-base.json: $(ONT)-base.owl
-	$(ROBOT) annotate --input $< --ontology-iri $(ONTBASE)/$@ $(ANNOTATE_ONTOLOGY_VERSION) \
-		convert --check false -f json -o $@.tmp.json &&\
-		mv $@.tmp.json $@
-$(ONT)-full.json: $(ONT)-full.owl
-	$(ROBOT) annotate --input $< --ontology-iri $(ONTBASE)/$@ $(ANNOTATE_ONTOLOGY_VERSION) \
-		convert --check false -f json -o $@.tmp.json &&\
-		mv $@.tmp.json $@
 # ----------------------------------------
 # Release artefacts: main release artefacts
 # ----------------------------------------
@@ -475,10 +455,6 @@ $(ONT).owl: $(ONT)-full.owl
 	$(ROBOT) annotate --input $< --ontology-iri $(URIBASE)/$@ $(ANNOTATE_ONTOLOGY_VERSION) \
 		convert -o $@.tmp.owl && mv $@.tmp.owl $@
 
-$(ONT).json: $(ONT).owl
-	$(ROBOT) annotate --input $< --ontology-iri $(URIBASE)/$@ $(ANNOTATE_ONTOLOGY_VERSION) \
-		convert --check false -f json -o $@.tmp.json &&\
-		mv $@.tmp.json $@
 # -----------------------------------------------------
 # Release artefacts: variants (base, full, simple, etc)
 # -----------------------------------------------------
